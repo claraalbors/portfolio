@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Clara Albors — Colorist & VFX Compositor. Portfolio.">
+<title>Clara Albors — Colorist & VFX Compositor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Geist:wght@300;400;500&display=swap');
+:root{
+  --bg:#0D0D0D;--surface-1:#181818;--surface-2:#2E2E2E;
+  --text:#F0EDE8;--text-sec:#8A8A8A;--text-muted:#767676;
+  --border:rgba(255,255,255,0.08);--border-hover:rgba(255,255,255,0.20);--border-strong:rgba(255,255,255,0.14);
+  --fd:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --fu:'Geist',system-ui,sans-serif;
+  --pm:clamp(20px,3vw,48px);--maxw:1800px;
+  --eo:cubic-bezier(0.16,1,0.3,1);
+  --expo:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{background:var(--bg);color:var(--text);font-family:var(--fu);font-weight:300;-webkit-font-smoothing:antialiased;font-size:16px;scroll-behavior:smooth;}
+body{background:var(--bg);min-height:100vh;overflow-x:hidden;}
+img,video{display:block;width:100%;height:100%;object-fit:cover;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+::selection{background:var(--text);color:var(--bg);}
+
+/* SCROLL PROGRESS */
+.scroll-bar{position:fixed;top:0;left:0;height:1px;width:0%;background:var(--text);z-index:200;pointer-events:none;transition:width .05s linear;}
+
+/* CURSOR */
+.cursor{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--text);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;will-change:transform;}
+.cursor-ring{position:fixed;top:0;left:0;width:36px;height:36px;border:1px solid rgba(240,237,232,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .4s var(--eo),height .4s var(--eo),border-color .4s var(--eo);will-change:transform;display:flex;align-items:center;justify-content:center;}
+.cursor-ring.is-hover{width:72px;height:72px;border-color:rgba(240,237,232,0.8);}
+.cursor-ring.is-hover .cursor-label{opacity:1;}
+.cursor-label{font-family:var(--fd);font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text);opacity:0;transition:opacity .3s var(--eo);pointer-events:none;mix-blend-mode:difference;}
+@media(pointer:coarse){.cursor,.cursor-ring{display:none;}}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pm);z-index:100;mix-blend-mode:difference;pointer-events:none;}
+.nav>*{pointer-events:auto;}
+.nav__sig{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-0.02em;text-transform:uppercase;color:var(--text);transition:opacity .2s var(--eo);}
+.nav__sig:hover{opacity:.6;}
+.nav__right{display:flex;align-items:center;gap:36px;}
+.nav__links{display:flex;gap:36px;}
+.nav__link{font-family:var(--fd);font-size:13px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(240,237,232,.75);transition:color .2s var(--eo);position:relative;padding-bottom:4px;}
+.nav__link::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--text);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--eo);}
+.nav__link:hover{color:var(--text);}
+.nav__link:hover::after{transform:scaleX(1);}
+.nav__link--active{color:var(--text);}
+.nav__link--disabled{color:rgba(240,237,232,.25);cursor:default;pointer-events:none;}
+.nav__link--disabled:hover{color:rgba(240,237,232,.25);}
+.nav__link--disabled::after,.nav__link--disabled:hover::after{transform:scaleX(0)!important;}
+.lang{display:flex;gap:6px;font-family:var(--fu);font-size:11px;letter-spacing:0.12em;}
+.lang__btn{background:none;border:none;padding:0;cursor:pointer;color:rgba(240,237,232,.55);text-transform:uppercase;transition:color .2s var(--eo);}
+.lang__btn.is-active{color:var(--text);}
+.lang__sep{color:rgba(240,237,232,.3);}
+
+/* HERO */
+.hero{position:relative;height:100vh;min-height:640px;overflow:hidden;}
+.hero__slides{position:absolute;inset:0;z-index:0;user-select:none;-webkit-user-select:none;}
+.hero__slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s var(--eo);display:block;cursor:none;pointer-events:none;z-index:0;}
+.hero__slide img{pointer-events:none;width:100%;height:100%;object-fit:cover;}
+.hero__slide.is-active{opacity:1;pointer-events:auto;z-index:1;}
+.hero__slide.is-active img{animation:kenBurns 12s ease-in-out forwards;}
+@keyframes kenBurns{
+  from{transform:scale(1.06) translate(0,0);}
+  to{transform:scale(1.13) translate(-1.5%,-1%);}
+}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,.9) 0%,transparent 50%);z-index:1;pointer-events:none;}
+.hero__dots{position:absolute;bottom:clamp(24px,4vh,40px);left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:12px;}
+.hero__dot{width:7px;height:7px;border-radius:50%;background:rgba(240,237,232,.3);border:none;padding:0;cursor:pointer;transition:background .3s var(--eo),transform .3s var(--eo);}
+.hero__dot:hover{background:rgba(240,237,232,.6);}
+.hero__dot.is-active{background:var(--text);transform:scale(1.3);}
+.hero__footer{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 var(--pm) clamp(72px,12vh,140px);display:flex;justify-content:space-between;align-items:flex-end;gap:32px;}
+.hero__id{display:flex;flex-direction:column;gap:16px;overflow:hidden;}
+.hero__role{font-family:var(--fu);font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:rgba(240,237,232,.65);display:flex;align-items:center;gap:14px;}
+.hero__role::before{content:'';width:40px;height:1px;background:rgba(240,237,232,.5);}
+.hero__name{font-family:var(--fd);font-weight:800;font-size:clamp(56px,8vw,96px);line-height:.9;letter-spacing:-0.04em;text-transform:uppercase;color:var(--text);}
+.hero__sayhi{font-family:var(--fd);font-size:clamp(16px,1.6vw,22px);font-weight:500;letter-spacing:-0.01em;color:var(--text);display:inline-block;padding-bottom:8px;border-bottom:1px solid var(--border-hover);white-space:nowrap;margin-bottom:8px;position:relative;height:1.5em;overflow:hidden;transition:border-color .4s var(--eo);}
+.hero__sayhi:hover{border-color:var(--text);}
+.hero__sayhi-roll{display:block;transition:transform .5s var(--eo);}
+.hero__sayhi-line{display:block;height:1.5em;line-height:1.5em;}
+.hero__sayhi-line--alt{color:var(--text-sec);}
+.hero__sayhi:hover .hero__sayhi-roll{transform:translateY(-1.5em);}
+.hero__sayhi:hover .hero__sayhi-line--alt{color:var(--text);}
+
+/* WORK */
+.work{padding:120px var(--pm) 64px;max-width:var(--maxw);margin:0 auto;}
+.work__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:64px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+.work__title{font-family:var(--fd);font-weight:700;font-size:clamp(28px,4vw,52px);line-height:.9;letter-spacing:-0.02em;text-transform:uppercase;}
+
+.proj{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;cursor:none;}
+.frame{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--surface-1);}
+.frame__media{position:absolute;inset:0;transition:filter .6s var(--eo),transform .6s var(--eo);}
+.frame__media img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--eo);}
+.proj:hover .frame__media{filter:brightness(.45);}
+.proj:hover .frame__media img{transform:scale(1.04);}
+.proj__card{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(13,13,13,.3);border:1px solid var(--border-strong);opacity:0;pointer-events:none;transition:opacity .4s var(--eo);padding:24px;}
+.proj:hover .proj__card{opacity:1;}
+.proj__t{font-family:var(--fd);font-weight:600;font-size:clamp(28px,4vw,56px);line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;color:var(--text);transform:translateY(20px);transition:transform .55s var(--eo) .06s;}
+.proj:hover .proj__t{transform:translateY(0);}
+.proj__m{font-family:var(--fu);font-size:13px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-sec);margin-top:16px;transform:translateY(16px);transition:transform .5s var(--eo) .12s;}
+.proj:hover .proj__m{transform:translateY(0);}
+
+.work__foot{display:flex;justify-content:flex-end;margin-top:32px;}
+.work__more{display:inline-flex;align-items:center;gap:10px;font-family:var(--fu);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-sec);transition:color .3s var(--eo),gap .3s var(--eo);}
+.work__more:hover{color:var(--text);gap:16px;}
+
+/* INFO */
+.info{padding:180px var(--pm) 120px;border-top:1px solid var(--border);margin:120px auto 0;max-width:var(--maxw);}
+.info__title{font-family:var(--fd);font-weight:700;font-size:clamp(28px,4vw,52px);line-height:.9;letter-spacing:-0.02em;text-transform:uppercase;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:64px;}
+.info__in{display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:start;}
+
+/* Photo block */
+.info__photo{display:flex;flex-direction:column;gap:20px;}
+.info__photo img{width:100%;height:auto;display:block;filter:grayscale(8%);}
+.info__photo-caption{display:flex;justify-content:space-between;align-items:baseline;padding-top:4px;border-top:1px solid var(--border);}
+.info__photo-role{font-family:var(--fu);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-muted);}
+.info__photo-tools{font-family:var(--fu);font-size:11px;letter-spacing:0.1em;color:var(--text-muted);}
+
+.info__text{font-family:var(--fu);font-weight:300;font-size:18px;line-height:1.7;color:var(--text-sec);max-width:52ch;}
+.info__text p+p{margin-top:24px;}
+.info__text strong{color:var(--text);font-weight:400;}
+.info__contact{margin-top:64px;display:flex;flex-direction:column;gap:16px;padding-top:32px;border-top:1px solid var(--border);}
+.info__row{display:flex;gap:32px;align-items:baseline;}
+.info__lbl{font-family:var(--fu);font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:var(--text-muted);min-width:90px;}
+.info__val{font-family:var(--fu);font-size:15px;color:var(--text);transition:opacity .2s var(--eo);}
+a.info__val:hover{opacity:.6;}
+
+/* FOOTER */
+.footer{padding:32px var(--pm);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-family:var(--fu);font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:var(--text-muted);}
+.footer__links{display:flex;gap:32px;}
+.footer a{color:var(--text-muted);transition:color .2s var(--eo);}
+.footer a:hover{color:var(--text);}
+.footer .lang{font-size:10px;letter-spacing:0.2em;}
+
+@media(max-width:768px){
+  .nav{padding:16px 18px;}
+  .nav__sig{font-size:12px;white-space:nowrap;}
+  .nav__right{gap:14px;}
+  .nav__links{gap:13px;}
+  .nav__link{font-size:10px;letter-spacing:0.06em;padding-bottom:3px;}
+  .lang{font-size:10px;}
+  .hero__footer{flex-direction:column;align-items:flex-start;gap:24px;padding-bottom:clamp(64px,14vh,110px);}
+  .hero__name{font-size:clamp(44px,13vw,90px);}
+  .hero__sayhi{font-size:18px;}
+  .info__in{grid-template-columns:1fr;gap:64px;}
+  .info__photo-caption{flex-direction:column;gap:6px;}
+  .work{padding:96px var(--pm) 48px;}
+}
+@media(max-width:600px){
+  .proj{grid-template-columns:1fr;gap:6px;cursor:auto;}
+  .proj__card{position:static;opacity:1;border:none;background:none;padding:4px 0 28px;align-items:flex-start;text-align:left;order:-1;}
+  .proj__t{font-size:clamp(26px,7vw,38px);transform:none;}
+  .proj__m{margin-top:8px;font-size:11px;transform:none;}
+  .proj:hover .frame__media{filter:none;}
+  .proj:hover .frame__media img{transform:none;}
+  .frame{aspect-ratio:3/2;}
+  .info__row{flex-direction:column;gap:2px;}
+  .footer{flex-direction:column;gap:16px;align-items:flex-start;}
+}
+@media(max-width:380px){
+  .nav__links{gap:10px;}
+  .nav__link{font-size:9px;letter-spacing:0.04em;}
+  .nav__sig{font-size:11px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}
+  html{scroll-behavior:auto;}
+  .hero__slide{transition:none;}
+  .hero__slide.is-active img{animation:none;transform:scale(1.06);}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"><span class="cursor-label">VIEW</span></div>
+
+<nav class="nav">
+  <a href="/" class="nav__sig">Clara Albors</a>
+  <div class="nav__right">
+    <ul class="nav__links">
+      <li><a href="#work" class="nav__link nav__link--active">Work</a></li>
+      <li><a href="#" class="nav__link nav__link--disabled" aria-disabled="true">Compositing</a></li>
+      <li><a href="#info" class="nav__link" data-en="Info" data-es="Info">Info</a></li>
+    </ul>
+    <div class="lang" id="langNav">
+      <button class="lang__btn is-active" data-lang="en">EN</button>
+      <span class="lang__sep">/</span>
+      <button class="lang__btn" data-lang="es">ES</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__slides" id="heroSlides">
+    <a class="hero__slide is-active" href="projects/retrato-de-una-cerilla.html"><img src="img/RDUC_4.jpg" alt="Retrato de una cerilla" draggable="false"></a>
+    <a class="hero__slide" href="projects/hacemos-lo-que-podemos.html"><img loading="lazy" src="img/HLQP_1.jpg" alt="Hacemos lo que podemos" draggable="false"></a>
+    <a class="hero__slide" href="projects/melia-villaitana.html"><img loading="lazy" src="img/MELIA_2.jpg" alt="Meliá Villaitana" draggable="false"></a>
+    <a class="hero__slide" href="projects/only-snuff.html"><img loading="lazy" src="img/ONLYSNUFF_2.jpg" alt="Only Snuff" draggable="false"></a>
+    <a class="hero__slide" href="projects/coquito-con-mortadela.html"><img loading="lazy" src="img/COQUITO_9.jpg" alt="Coquito con Mortadela" draggable="false"></a>
+    <a class="hero__slide" href="projects/cecilia-tan-lluny-tan-aprop.html"><img loading="lazy" src="img/CECILIA_1.jpg" alt="Cecilia, tan lluny tan aprop" draggable="false"></a>
+  </div>
+  <div class="hero__dots" id="heroDots"></div>
+  <div class="hero__footer">
+    <div class="hero__id">
+      <span class="hero__role">Colorist · VFX Compositor</span>
+      <h1 class="hero__name">Clara Albors</h1>
+    </div>
+    <a href="mailto:hola@claraalbors.com" class="hero__sayhi"><span class="hero__sayhi-roll"><span class="hero__sayhi-line" data-en="Get in touch" data-es="Contacto">Get in touch</span><span class="hero__sayhi-line hero__sayhi-line--alt">hola@claraalbors.com</span></span></a>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="work__head">
+    <h2 class="work__title">Work</h2>
+  </div>
+
+  <a href="projects/retrato-de-una-cerilla.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/RDUC_4.jpg" alt="Retrato de una cerilla — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/RDUC_16.jpg" alt="Retrato de una cerilla — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/RDUC_26.jpg" alt="Retrato de una cerilla — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Retrato de una cerilla</span><span class="proj__m" data-en="Documentary · When Lights Are Low" data-es="Documental · When Lights Are Low">Documentary · When Lights Are Low</span></div>
+  </a>
+
+  <a href="projects/hacemos-lo-que-podemos.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/HLQP_1.jpg" alt="Hacemos lo que podemos — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/HLQP_4.jpg" alt="Hacemos lo que podemos — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/HLQP_13.jpg" alt="Hacemos lo que podemos — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Hacemos lo que podemos</span><span class="proj__m" data-en="Music Video · Mala Gestión" data-es="Videoclip · Mala Gestión">Music Video · Mala Gestión</span></div>
+  </a>
+
+  <a href="projects/melia-villaitana.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/MELIA_2.jpg" alt="Meliá Villaitana — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/MELIA_4.jpg" alt="Meliá Villaitana — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/MELIA_10.jpg" alt="Meliá Villaitana — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Meliá Villaitana</span><span class="proj__m" data-en="Advertising · Meliá Hotels" data-es="Publicidad · Meliá Hotels">Advertising · Meliá Hotels</span></div>
+  </a>
+
+  <a href="projects/only-snuff.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/ONLYSNUFF_2.jpg" alt="Only Snuff — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/ONLYSNUFF_9.jpg" alt="Only Snuff — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/ONLYSNUFF_12.jpg" alt="Only Snuff — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Only Snuff</span><span class="proj__m" data-en="Short Film · ESCAC · 2024" data-es="Cortometraje · ESCAC · 2024">Short Film · ESCAC · 2024</span></div>
+  </a>
+
+  <a href="projects/coquito-con-mortadela.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/COQUITO_9.jpg" alt="Coquito con Mortadela — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/COQUITO_10.jpg" alt="Coquito con Mortadela — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/COQUITO_15.jpg" alt="Coquito con Mortadela — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Coquito con Mortadela</span><span class="proj__m" data-en="Documentary · BesaFilms · 2025" data-es="Documental · BesaFilms · 2025">Documentary · BesaFilms · 2025</span></div>
+  </a>
+
+  <a href="projects/cecilia-tan-lluny-tan-aprop.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/CECILIA_1.jpg" alt="Cecilia, tan lluny tan aprop — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/CECILIA_15.jpg" alt="Cecilia, tan lluny tan aprop — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/CECILIA_20.jpg" alt="Cecilia, tan lluny tan aprop — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Cecilia, tan lluny tan aprop</span><span class="proj__m" data-en="Documentary · Taranná Films · 2024" data-es="Documental · Taranná Films · 2024">Documentary · Taranná Films · 2024</span></div>
+  </a>
+
+  <a href="projects/un-perro-ladra-detras-del-deposito.html" class="proj">
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/UPLDDD_1.jpg" alt="Un perro ladra detrás del depósito — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/UPLDDD_5.jpg" alt="Un perro ladra detrás del depósito — color grading still by Clara Albors"></div></div>
+    <div class="frame"><div class="frame__media"><img loading="lazy" src="img/UPLDDD_7.jpg" alt="Un perro ladra detrás del depósito — color grading still by Clara Albors"></div></div>
+    <div class="proj__card"><span class="proj__t">Un perro ladra detrás del depósito</span><span class="proj__m" data-en="Documentary Short · Taranná Films" data-es="Cortometraje documental · Taranná Films">Documentary Short · Taranná Films</span></div>
+  </a>
+
+</section>
+
+<!-- INFO -->
+<section class="info" id="info">
+  <h2 class="info__title">Info</h2>
+  <div class="info__in">
+
+    <div class="info__photo">
+      <img src="img/clara.jpg" alt="Clara Albors — colorist at work">
+    </div>
+
+    <div>
+      <div class="info__text" data-en-html="<p><strong>Clara Albors is a colorist and VFX compositor.</strong> She works in colour grading and compositing for feature documentaries, short films, series, music videos and advertising.</p><p>Her work spans the full image pipeline: from on-set DIT to final delivery in broadcast and digital formats. She works in DaVinci Resolve, NukeX and Silverstack, managing deliverables independently across simultaneous projects with tight deadlines.</p><p>Recent credits include <strong>Retrato de una cerilla</strong> (Docs Valencia 2026), <strong>Coquito con Mortadela</strong> (Docs Valencia 2025, Miami Film Festival 2026), <strong>Cecilia, tan lluny, tan aprop</strong> (Docs Valencia 2025, Mirades Directed By Women 2025), and <strong>Only Snuff</strong> (2024 — Mórbido Film Fest, Milwaukee Horror FF, Cabin in the Woods FF, among others).</p>"
+        data-es-html="<p><strong>Clara Albors es colorista y compositora VFX.</strong> Trabaja en etalonaje y compositing para largometraje documental, cortometraje, serie, videoclip y publicidad.</p><p>Su trabajo abarca el pipeline completo de imagen: desde el rodaje como DIT hasta la entrega final en formatos broadcast y digital. Trabaja en DaVinci Resolve, NukeX y Silverstack, gestionando entregas de forma autónoma en proyectos simultáneos con plazos ajustados.</p><p>Entre sus proyectos recientes: <strong>Retrato de una cerilla</strong> (Docs Valencia 2026), <strong>Coquito con Mortadela</strong> (Docs Valencia 2025, Miami Film Festival 2026), <strong>Cecilia, tan lluny, tan aprop</strong> (Docs Valencia 2025, Mirades Directed By Women 2025), y <strong>Only Snuff</strong> (2024 — Mórbido Film Fest, Milwaukee Horror FF, Cabin in the Woods FF, entre otros).</p>">
+        <p><strong>Clara Albors is a colorist and VFX compositor.</strong> She works in colour grading and compositing for feature documentaries, short films, series, music videos and advertising.</p>
+        <p>Her work spans the full image pipeline: from on-set DIT to final delivery in broadcast and digital formats. She works in DaVinci Resolve, NukeX and Silverstack, managing deliverables independently across simultaneous projects with tight deadlines.</p>
+        <p>Recent credits include <strong>Retrato de una cerilla</strong> (Docs Valencia 2026), <strong>Coquito con Mortadela</strong> (Docs Valencia 2025, Miami Film Festival 2026), <strong>Cecilia, tan lluny, tan aprop</strong> (Docs Valencia 2025, Mirades Directed By Women 2025), and <strong>Only Snuff</strong> (2024 — Mórbido Film Fest, Milwaukee Horror FF, Cabin in the Woods FF, among others).</p>
+      </div>
+      <div class="info__contact">
+        <div class="info__row"><span class="info__lbl">Email</span><a href="mailto:hola@claraalbors.com" class="info__val">hola@claraalbors.com</a></div>
+        <div class="info__row"><span class="info__lbl">Instagram</span><a href="https://www.instagram.com/clara.albrs" target="_blank" rel="noopener" class="info__val">@clara.albrs</a></div>
+        <div class="info__row"><span class="info__lbl" data-en="Press" data-es="Prensa">Press</span><a href="https://valenciaplaza.com/cine-audiovisual-valencia-comunitat-valenciana/generacion-v-clara-albors-gomez" target="_blank" rel="noopener" class="info__val">Valencia Plaza ↗</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>© 2026 Clara Albors</span>
+  <ul class="footer__links">
+    <li><a href="mailto:hola@claraalbors.com">Email</a></li>
+    <li><a href="https://www.instagram.com/clara.albrs" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
+  <div class="lang" id="langFoot">
+    <button class="lang__btn is-active" data-lang="en">EN</button>
+    <span class="lang__sep">/</span>
+    <button class="lang__btn" data-lang="es">ES</button>
+  </div>
+</footer>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+/* ---- Hero carousel ---- */
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.hero__slide'));
+  var wrap=document.getElementById('heroDots');
+  var stage=document.getElementById('heroSlides');
+  if(!slides.length||!wrap)return;
+  var i=0,timer=null,DELAY=3000;
+  var dots=slides.map(function(_,n){
+    var b=document.createElement('button');
+    b.className='hero__dot'+(n===0?' is-active':'');
+    b.setAttribute('aria-label','Image '+(n+1));
+    b.addEventListener('click',function(){go(n);reset();});
+    wrap.appendChild(b);return b;
+  });
+  var prefersReduced=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  function go(n){
+    slides[i].classList.remove('is-active');
+    dots[i].classList.remove('is-active');
+    i=(n+slides.length)%slides.length;
+    slides[i].classList.add('is-active');
+    dots[i].classList.add('is-active');
+    /* reset Ken Burns */
+    var img=slides[i].querySelector('img');
+    img.style.animation='none';
+    void img.offsetHeight;
+    img.style.animation='';
+  }
+  function reset(){clearInterval(timer);if(!prefersReduced){timer=setInterval(function(){go(i+1);},DELAY);}}
+  reset();
+
+  stage.addEventListener('mouseenter',function(){clearInterval(timer);});
+  stage.addEventListener('mouseleave',function(){reset();});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft'){go(i-1);reset();}
+    else if(e.key==='ArrowRight'){go(i+1);reset();}
+  });
+
+  var startX=null,dragging=false,moved=false;
+  function down(x){startX=x;dragging=true;moved=false;}
+  function move(x){if(!dragging||startX===null)return;if(Math.abs(x-startX)>8)moved=true;}
+  function up(x){
+    if(!dragging)return;
+    dragging=false;
+    if(startX===null)return;
+    var dx=x-startX;startX=null;
+    if(Math.abs(dx)>50){go(dx<0?i+1:i-1);reset();}
+    setTimeout(function(){moved=false;},0);
+  }
+  stage.addEventListener('mousedown',function(e){down(e.clientX);});
+  window.addEventListener('mousemove',function(e){move(e.clientX);});
+  window.addEventListener('mouseup',function(e){up(e.clientX);});
+  stage.addEventListener('touchstart',function(e){down(e.touches[0].clientX);},{passive:true});
+  stage.addEventListener('touchmove',function(e){move(e.touches[0].clientX);},{passive:true});
+  stage.addEventListener('touchend',function(e){up(e.changedTouches[0].clientX);});
+  stage.querySelectorAll('.hero__slide').forEach(function(a){
+    a.addEventListener('click',function(e){if(moved)e.preventDefault();});
+  });
+})();
+
+/* ---- Scroll progress ---- */
+(function(){
+  var bar=document.getElementById('scrollBar');
+  if(!bar)return;
+  window.addEventListener('scroll',function(){
+    var pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+    bar.style.width=pct+'%';
+  },{passive:true});
+})();
+
+/* ---- Custom cursor ---- */
+(function(){
+  var dot=document.getElementById('cursor');
+  var ring=document.getElementById('cursorRing');
+  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches)return;
+  var mx=window.innerWidth/2,my=window.innerHeight/2;
+  var rx=mx,ry=my;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;},{ passive:true });
+  (function tick(){
+    rx+=(mx-rx)*0.1;
+    ry+=(my-ry)*0.1;
+    dot.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';
+    ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('.proj,.hero__slide,.nav__sig,.nav__link,.hero__sayhi').forEach(function(el){
+    el.addEventListener('mouseenter',function(){ring.classList.add('is-hover');});
+    el.addEventListener('mouseleave',function(){ring.classList.remove('is-hover');});
+  });
+  /* VIEW label only on project rows, suppress on nav/hero */
+  document.querySelectorAll('.nav__sig,.nav__link,.hero__sayhi,.hero__slide').forEach(function(el){
+    el.addEventListener('mouseenter',function(){ring.querySelector('.cursor-label').style.opacity='0';});
+    el.addEventListener('mouseleave',function(){ring.querySelector('.cursor-label').style.opacity='';});
+  });
+})();
+
+/* ---- Text scramble ---- */
+function scramble(el, finalText, duration){
+  var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var steps=14, step=0;
+  var iv=setInterval(function(){
+    var p=step/steps;
+    var out='';
+    for(var j=0;j<finalText.length;j++){
+      if(finalText[j]===' '){out+=' ';}
+      else if(j<Math.floor(finalText.length*p)){out+=finalText[j];}
+      else{out+=chars[Math.floor(Math.random()*chars.length)];}
+    }
+    el.textContent=out;
+    step++;
+    if(step>steps){clearInterval(iv);el.textContent=finalText;}
+  }, duration/steps);
+}
+
+/* ---- GSAP animations ---- */
+(function(){
+  if(typeof gsap==='undefined'||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* Page load timeline */
+  var tl=gsap.timeline({defaults:{ease:'power4.out'},delay:0.1});
+
+  tl.from('.nav',{yPercent:-100,duration:0.9},0)
+    .fromTo('.hero__role',
+      {clipPath:'inset(0 100% 0 0)'},
+      {clipPath:'inset(0 0% 0 0)',duration:1},
+      0.45)
+    .fromTo('.hero__name',
+      {clipPath:'inset(0 100% 0 0)'},
+      {clipPath:'inset(0 0% 0 0)',duration:1.1,
+        onComplete:function(){
+          var el=document.querySelector('.hero__name');
+          if(el)scramble(el,'CLARA ALBORS',700);
+        }
+      },0.6)
+    .from('.hero__sayhi',{opacity:0,yPercent:15,duration:0.8},0.9)
+    .from('.hero__dot',{opacity:0,scale:0,stagger:0.06,duration:0.5},1.1);
+
+  /* Work title */
+  gsap.fromTo('.work__title',
+    {clipPath:'inset(0 100% 0 0)'},
+    {clipPath:'inset(0 0% 0 0)',duration:0.9,ease:'power4.out',
+      scrollTrigger:{trigger:'.work__title',start:'top 90%'}});
+
+  /* Project row reveals — gate wipe */
+  gsap.utils.toArray('.proj').forEach(function(proj){
+    gsap.fromTo(proj,
+      {clipPath:'inset(0 0 100% 0)'},
+      {clipPath:'inset(0 0 0% 0)',duration:0.85,ease:'power4.out',
+        scrollTrigger:{trigger:proj,start:'top 88%'}});
+  });
+
+  /* Info section */
+  gsap.fromTo('.info__title',
+    {clipPath:'inset(0 100% 0 0)'},
+    {clipPath:'inset(0 0% 0 0)',duration:0.9,ease:'power4.out',
+      scrollTrigger:{trigger:'.info__title',start:'top 90%'}});
+
+  gsap.from('.info__photo',{
+    opacity:0,y:24,duration:1.1,ease:'power4.out',
+    scrollTrigger:{trigger:'.info__in',start:'top 80%'}});
+
+  gsap.from('.info__text',{
+    opacity:0,y:24,duration:0.9,ease:'power4.out',
+    scrollTrigger:{trigger:'.info__in',start:'top 78%'}});
+
+  gsap.from('.info__contact',{
+    opacity:0,y:20,duration:0.8,ease:'power4.out',
+    scrollTrigger:{trigger:'.info__contact',start:'top 88%'}});
+
+  gsap.from('.footer',{
+    opacity:0,duration:0.7,ease:'power2.out',
+    scrollTrigger:{trigger:'.footer',start:'top 95%'}});
+
+})();
+
+/* ---- Project click transition ---- */
+(function(){
+  if(typeof gsap==='undefined'||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:8000;pointer-events:none;background-size:cover;background-position:center;opacity:0;';
+  document.body.appendChild(overlay);
+
+  document.querySelectorAll('.proj').forEach(function(proj){
+    proj.addEventListener('click',function(e){
+      e.preventDefault();
+      var href=proj.getAttribute('href');
+      var rect=proj.getBoundingClientRect();
+      var vw=window.innerWidth,vh=window.innerHeight;
+      var t=Math.round(rect.top),r=Math.round(vw-rect.right),b=Math.round(vh-rect.bottom),l=Math.round(rect.left);
+
+      /* use the first still as the expanding fill */
+      var img=proj.querySelector('.frame__media img');
+      if(img&&img.src){
+        overlay.style.backgroundImage='url("'+img.src+'")';
+      } else {
+        overlay.style.backgroundImage='none';
+        overlay.style.background='#0D0D0D';
+      }
+
+      gsap.set(overlay,{opacity:1,clipPath:'inset('+t+'px '+r+'px '+b+'px '+l+'px)'});
+      gsap.to(overlay,{
+        clipPath:'inset(0px 0px 0px 0px)',
+        duration:0.72,
+        ease:'power4.inOut',
+        onComplete:function(){window.location.href=href;}
+      });
+    });
+  });
+})();
+
+/* ---- Language toggle EN/ES ---- */
+(function(){
+  var lang='en';
+  function apply(l){
+    lang=l;
+    document.documentElement.lang=l;
+    try{localStorage.setItem('lang',l);}catch(e){}
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      var v=el.getAttribute('data-'+l);if(v!==null)el.textContent=v;
+    });
+    document.querySelectorAll('[data-en-html]').forEach(function(el){
+      var v=el.getAttribute('data-'+l+'-html');if(v!==null)el.innerHTML=v;
+    });
+    document.querySelectorAll('.lang__btn').forEach(function(b){
+      b.classList.toggle('is-active',b.getAttribute('data-lang')===l);
+    });
+  }
+  document.querySelectorAll('.lang__btn').forEach(function(b){
+    b.addEventListener('click',function(){apply(b.getAttribute('data-lang'));});
+  });
+  var saved='en';
+  try{saved=localStorage.getItem('lang')||'en';}catch(e){}
+  apply(saved);
+})();
+</script>
+</body>
+</html>

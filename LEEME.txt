@@ -1,0 +1,43 @@
+CLARA ALBORS — WEB PORTFOLIO
+============================
+
+CÓMO USAR:
+1. Carpeta "clara-albors-web" con index.html + carpeta projects.
+2. AÑADE TU CARPETA "img" (la de Escritorio) dentro, al lado de index.html.
+3. Doble clic en index.html.
+
+CAMBIOS DE ESTA VERSIÓN:
+- WORK ya no está subrayado fijo: se subraya SOLO al pasar el ratón.
+- Hero con un ligero zoom (scale 1.06) para que NO se vea la raya/barra
+  negra que asomaba en ciertos stills (RDUC, ONLYSNUFF, CECILIA).
+- En el grid, RDUC ya no pone "Color Grading": ahora pone la productora
+  ("Documentary · When Lights Are Low"), como el resto.
+- ADAPTADO A MÓVIL:
+  · Menú superior compacto que ya no se solapa (probado a 390 y 360 px).
+  · En el grid, en móvil sale primero el TÍTULO del proyecto y debajo las
+    stills (más fácil de escanear).
+  · Stills del grid a 3/2 en móvil (no ocupan pantallas enteras).
+  · Case studies: meta, descripción y galería en una columna.
+- Mejoras técnicas: textos ALT descriptivos en las fotos del grid (mejor
+  SEO/accesibilidad) y el enlace "Compositing" (aún en gris) ya no salta.
+
+PENDIENTE QUE DEBES TOCAR TÚ ANTES DE SUBIR:
+- EMAIL: busca "hola@claraalbors.com" en index.html y en las 7 páginas de
+  projects/ y pon tu correo real.
+- VIMEO del footer: hay 2 enlaces con href="#" en cada página (footer e Info);
+  pon tu Vimeo real.
+- (Solo si quieres que el vídeo de RETRATO se incruste) en Vimeo, ese vídeo:
+  Settings → Privacy → "Where can this be embedded?" → Anywhere
+  (o añade claraalbors.com). Si no, se queda la still + "Ver tráiler ↗".
+
+SUBIR A HOSTINGER:
+- Sube index.html + carpeta img + carpeta projects a public_html.
+
+ANÁLISIS DE BUGS (revisado, todo OK salvo lo de arriba):
+- Sin imágenes rotas. Sin enlaces <a> mal anidados. 1 <h1> por página.
+- Viewport y meta presentes. Idioma EN/ES se recuerda entre páginas.
+- Los vídeos necesitan internet; si fallan, se queda la still (sin error).
+
+PRÓXIMO CHAT:
+- Sección Compositing + proyectos VFX.
+- Opcional: movimiento (Lenis, GSAP, Barba.js), favicon, vídeo embebido.
